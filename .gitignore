@@ -1,0 +1,8 @@
+*.db
+*.dll
+*.pyc
+password.txt
+.vscode
+__pycache__
+Library/__pycache__
+Library/*.pyc
