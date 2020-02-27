@@ -57,10 +57,10 @@ Run
 ===
 
 1. Run `python genTestDB.py [password]` to get a password encrypted SQLite database for test.
-2. Modify the variables from the header of ***opencl_test.py*** to satisfy your requirments.
-3. `python opencl_test.py`
+2. Modify the variables from the header of ***Run.py*** to satisfy your requirments.
+3. `python Run.py`
 4. Now you get the available platforms and their number in console output.
-5. `python opencl_test.py [platform Number]`
+5. `python Run.py [platform number]`
 
 Thanks for support
 ==================
