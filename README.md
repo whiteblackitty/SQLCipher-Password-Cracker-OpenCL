@@ -7,7 +7,7 @@ Installation
 =============
 
 1. Get **python 3.7 64-Bit**
-2. Download and install the **OpenCL SDK** (e.g. from [Intel](https://software.intel.com/en-us/opencl-sdk) to get the CPU platform SDK, or from [Nvidia](https://developer.nvidia.com/cuda-downloads) to get CUDA SDK for GPUs)
+2. Download and install the **OpenCL SDK** (e.g. from [Intel](https://software.intel.com/en-us/opencl-sdk) to get the CPU platform SDK, or from [Nvidia](https://developer.nvidia.com/cuda-toolkit-archive) to get CUDA SDK (test passed for CUDA version 10.2) for GPUs)
 3. Install **[pyOpenCL](https://pypi.org/project/pyopencl/)** using:
    `python -m pip install pyopencl`  
    Maybe you cannot just run the command above to finish the installation, then you should manually download pyOpenCL package and configure something about your OpenCL SDK path, refer to pyOpenCL [wiki](https://wiki.tiker.net/PyOpenCL/Installation/)
