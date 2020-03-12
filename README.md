@@ -3,6 +3,8 @@ Description
 
 **PBKDF2-noHMAC-SHA1--AES-256-CBC** encrypted SQLite database (**SQLCipher v2** standard) password bruteforcing using OpenCL and Python. The code here is for cracking **password which only consists of fixed-length hex chars**, but can be easily adapted for universal use. This repository is the result of many developers' effort.
 
+**Warning**: This repository is only for studies on computer safety, anyone who use it illegally should bear the responsibility of their own.
+
 Installation
 =============
 
@@ -65,7 +67,7 @@ Run
 Thanks for support
 ==================
 
-- OpenCL code for PBKDF2-SHA1 and python code framework： [opencl_brute](https://github.com/bkerler/opencl_brute) by *B. Kerler*
+- OpenCL code for PBKDF2-SHA1 and python code framework: [opencl_brute](https://github.com/bkerler/opencl_brute) by *B. Kerler*
 - OpenCL code for AES roundkeys: [AES-OpenCL](https://github.com/adrianbelgun/AES-OpenCL) by *adrianbelgun*
 - OpenCL code for AES-CBC-256 decrypting: [CryptoCL](https://github.com/Omegaice/CryptoCL) by *Omegaice*
 - General ideas on validating the decrypted database: [EnMicroMsg.db-Password-Cracker](https://github.com/chg-hou/EnMicroMsg.db-Password-Cracker) by *chg-hou*
