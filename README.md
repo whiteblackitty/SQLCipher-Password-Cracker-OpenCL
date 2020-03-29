@@ -1,7 +1,7 @@
 Description
 ===========
 
-**PBKDF2-noHMAC-SHA1--AES-256-CBC** encrypted SQLite database (**SQLCipher v2** standard) password bruteforcing using OpenCL and Python. The code here is for cracking **password which only consists of fixed-length hex chars**, but can be easily adapted for universal use. This repository is the result of many developers' effort.
+**PBKDF2-noHMAC-SHA1--AES-256-CBC** encrypted SQLite database (**SQLCipher v2** standard) password bruteforcing using OpenCL(utilize the great power of GPU) and Python. The code here is for cracking **password which only consists of fixed-length hex chars**, but can be easily adapted for universal use. This repository is the result of many developers' effort.
 
 **Warning**: This repository is only for studies on computer safety, anyone who use it illegally should bear the responsibility of their own.
 
@@ -9,11 +9,11 @@ Installation
 =============
 
 1. Get **python 3.7 64-Bit**
-2. Download and install the **OpenCL SDK** (e.g. from [Intel](https://software.intel.com/en-us/opencl-sdk) to get the CPU platform SDK, or from [Nvidia](https://developer.nvidia.com/cuda-toolkit-archive) to get CUDA SDK (test passed for CUDA version 10.2) for GPUs)
+2. Download and install the **OpenCL SDK** (Note that only OpenCL runtime is not enough for our cracking journey, we need SDK.)(e.g. from [Intel](https://software.intel.com/en-us/opencl-sdk) to get the Intel CPU platform SDK, and from [Nvidia](https://developer.nvidia.com/cuda-toolkit-archive) to get CUDA SDK (test passed for CUDA version 10.0 and 10.2, other versions are not tested) for NVIDIA GPUs). Generally Intel SDK is not required, CUDA SDK is just enough. AMD CPUs and GPUs are not supported because of the problematic AMD APP SDK.
 3. Install **[pyOpenCL](https://pypi.org/project/pyopencl/)** using:
    `python -m pip install pyopencl`  
    Maybe you cannot just run the command above to finish the installation, then you should manually download pyOpenCL package and configure something about your OpenCL SDK path, refer to pyOpenCL [wiki](https://wiki.tiker.net/PyOpenCL/Installation/)
-4. Install **[pysqlcipher3](https://github.com/rigglemania/pysqlcipher3)** using the manual there
+4. Install **[pysqlcipher3](https://github.com/rigglemania/pysqlcipher3)** using the manual there, or see the information below.
 
 Hints for pysqlcipher3 Installation
 ======================
@@ -21,7 +21,7 @@ Following the manual of pysqlcipher3 will not always get things run, because of 
 
 ## Suggestion for Windows users ##
 
-In the typical process of installing pysqlcipher3, you should install **[OpenSSL x64 libraries](http://slproweb.com/products/Win32OpenSSL.html)**  and then compile **[sqlcipher](https://github.com/sqlcipher/sqlcipher)** first. I suggest "Build against amalgamation", requiring no actual build of sqlcipher, which is tested on my computer, whose steps after installing OpenSSL are as following:
+In the typical process of installing pysqlcipher3, you should install **[OpenSSL x64 libraries](http://slproweb.com/products/Win32OpenSSL.html)**  and then compile **[sqlcipher](https://github.com/sqlcipher/sqlcipher)** first. I suggest "Build against amalgamation", requiring no actual build of sqlcipher, which is tested on my computer, whose steps after installing **[OpenSSL x64 libraries](http://slproweb.com/products/Win32OpenSSL.html)** are as following:
 
 1. Compile the amalgamation files of sqlcipher:
 Run the **Developer Command Prompt of Visual Studio**, then cded to the **sqlcipher folder**, run:
@@ -30,16 +30,16 @@ Run the **Developer Command Prompt of Visual Studio**, then cded to the **sqlcip
 
 2. Copy to pysqlcipher3 folder: Make a folder named ***amalgamation*** in **pysqlcipher3 folder**,  then copy the generated ***sqlite3.c*** and ***sqlite3.h*** to the folder.
 
-3. Modify the source files of pysqlcipher3: In ***pysqlcipher3\src\python3***, change the ***"#include "pysqlcipher\sqlite3.h""*** to ***"#include "sqlite3.h""*** of ***connection.h***, ***statement.h*** and ***util.h***.
+3. Modify the source files of pysqlcipher3: In ***pysqlcipher3\src\python3***, change the ***"#include "sqlcipher\sqlite3.h""*** to ***"#include "sqlite3.h""*** of ***connection.h***, ***statement.h*** and ***util.h***.
 
-4. Modify the setup.py of pysqlcipher3: change the string ***"openssl_lib_path = os.path.join(openssl, "lib")"*** to ***"openssl_lib_path = os.path.join(openssl, "lib\VC")"*** Then, change the string ***"libeay32.lib"*** to ***"libcrypto64MD.lib"***, then add a following statement: ***ext.extra_link_args.append("libssl64MD.lib")*** . We need **x64** OpenSSL Libraries because the python is 64-bit and thus uses x64 MSVC Compiler during the process of building pysqlcipher sources along with sqlite3.c, sqlite3.h.
+4. Modify the setup.py of pysqlcipher3: First, change the ***"openssl = os.path..."*** to ***"openssl = [your openssl installation folder]"***. Then change the string ***"openssl_lib_path = os.path.join(openssl, "lib")"*** to ***"openssl_lib_path = os.path.join(openssl, "lib\VC")"*** Then, change the string ***"libeay32.lib"*** to ***"libcrypto64MD.lib"***, then add a following statement: ***ext.extra_link_args.append("libssl64MD.lib")*** . We need **x64** OpenSSL Libraries because the python is 64-bit and thus uses x64 MSVC Compiler during the process of building pysqlcipher sources along with sqlite3.c, sqlite3.h.
 
 5. Build and Install: cded to **pysqlcipher3 folder**:
 
     `python setup.py build_amalgamation`  
     `python setup.py install`
 
-6. Finally copy the ***libcrypto-1_1-x64.dll*** and ***libssl-1_1-x64.dll*** in the OpenSSL path to **this repository folder**.
+6. Finally copy the ***libcrypto-1_1-x64.dll*** and ***libssl-1_1-x64.dll*** in the OpenSSL path to **this repository folder**. If you choose to *copy the libraries to system32 folder* when installing the OpenSSL libraries, you needn't perform this step.
 
 7. That's all.
 
@@ -82,6 +82,7 @@ Issues
 ======
 
 - Tested with : Intel Core i5 8300H, NVIDIA GTX 1050 Ti(As OpenCL platform) on Windows 10.
+- Tested with : Intel Xeon E3 1231 V3, NVIDIA RTX 2070(As OpenCL platform) on Windows 10.
 - AMD APP SDK is **not** supported because the AMD OpenCL compiler will wrongly parse the marcos in OpenCL code, thus get mistaken result. Theoritically you can replace the marcos with real functions to solve the problem, as all OpenCL functions will get inlined so no overhead would appear, but I have not practically tested this.
 - Only support maximum 16 chars for password with hex chars ranged from 0-9,a-f.
 - Commandline parser and distributed cracking is being developed, will be released soon.
