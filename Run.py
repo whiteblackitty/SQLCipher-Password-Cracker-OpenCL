@@ -66,7 +66,7 @@ def tryDecryptSQLiteDB(passwordnumlist):
             print("     Error: "+str(e))
             if str(e)=="file is not a database":
                 print("     This password is wrong, just proceed on trying......")
-            elif str(e)=="table test_table already exists":
+            elif str(e).endswith("already exists"):
                 successMark=True
                 print("     The dumped database filename has already exist, so the error occur, but the password is correct.")
             else:
