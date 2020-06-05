@@ -749,7 +749,7 @@ __kernel void func_pbkdf2(__constant const ulong * pwstart, __constant const uin
 	AddRoundKey( rkey, data, 0 );
     
 	//for sqlcipherv2 standard, verify the first 4 B at GPU side is reasonably enough, so we only need to decrypt the first block of data, and the finally decrypted text should be the data^iv(CBS Mode)
-    if(((uint)(data[0] ^ iv[0])==4) && ((uint)(data[1] ^ iv[1])==0) && ((uint)(data[2] ^ iv[2])==1) && ((uint)(data[3] ^ iv[3])==1))
+    if((((uint)(data[0] ^ iv[0])==4) && ((uint)(data[1] ^ iv[1])==0) && ((uint)(data[2] ^ iv[2])==1) && ((uint)(data[3] ^ iv[3])==1))||(((uint)(data[5] ^ iv[5])==0x40) && ((uint)(data[6] ^ iv[6])==0x20) && ((uint)(data[7] ^ iv[7])==0x20)))
 	{
 		result[idx]=true;
 	}
